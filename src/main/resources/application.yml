@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: scanner-hardware-discovery
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      jedis:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+  task:
+    scheduling:
+      pool:
+        size: 5
+
+scanner:
+  discovery:
+    polling-interval: 30s
+    cache-ttl: 5m
+    connection-state-ttl: 1m
+    max-concurrent-discoveries: 3
+  driver:
+    twain-library-path: ${TWAIN_PATH:./libs/TWAIN32.dll}
+    wia-enabled: ${WIA_ENABLED:true}
+    timeout: 10s
+    max-retry: 3
+    retry-delay: 1s
+  monitoring:
+    heartbeat-interval: 30s
+    device-timeout: 60s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    ai.shreds: DEBUG
+    org.springframework.data.redis: INFO
+    org.springframework.scheduling: INFO
+  pattern:
+    console: "%d{ISO8601} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{ISO8601} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE:scanner-discovery.log}
+    max-size: 10MB
+    max-history: 30

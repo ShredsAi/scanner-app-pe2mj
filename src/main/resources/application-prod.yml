@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: scanner-hardware-discovery
+  data:
+    redis:
+      cluster:
+        nodes: ${REDIS_CLUSTER_NODES:localhost:6379}
+        max-redirects: 3
+      timeout: 5000ms
+      jedis:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+          max-wait: 2000ms
+  task:
+    scheduling:
+      pool:
+        size: 10
+
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+
+scanner:
+  discovery:
+    cache-ttl: 10m
+    polling-interval: 60s
+    connection-state-ttl: 2m
+    max-concurrent-discoveries: 5
+  driver:
+    timeout: 15s
+    max-retry: 5
+    retry-delay: 2s
+  monitoring:
+    heartbeat-interval: 45s
+    device-timeout: 120s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    root: WARN
+    ai.shreds: INFO
+    org.springframework.data.redis: WARN
+  file:
+    name: /var/log/scanner-discovery.log
+    max-size: 50MB
+    max-history: 60
+  pattern:
+    file: "%d{ISO8601} [%thread] %-5level %logger{36} - %msg%n"

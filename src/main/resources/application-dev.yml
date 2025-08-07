@@ -1,0 +1,44 @@
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 1000ms
+      jedis:
+        pool:
+          max-active: 4
+          max-idle: 4
+          min-idle: 0
+
+scanner:
+  driver:
+    mock-enabled: true
+    timeout: 5s
+    max-retry: 2
+  discovery:
+    polling-interval: 10s
+    cache-ttl: 2m
+    connection-state-ttl: 30s
+  monitoring:
+    heartbeat-interval: 15s
+    device-timeout: 30s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+logging:
+  level:
+    root: DEBUG
+    ai.shreds: TRACE
+    org.springframework.data.redis: DEBUG
+    org.springframework.scheduling: DEBUG
+    org.springframework.retry: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
